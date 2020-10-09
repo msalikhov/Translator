@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_margin_half">8dp</dimen>
+    <dimen name="translation_text_size">28sp</dimen>
+    <dimen name="translation_history_text_size">18sp</dimen>
+</resources>

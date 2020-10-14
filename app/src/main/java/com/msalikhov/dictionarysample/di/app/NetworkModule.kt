@@ -1,5 +1,6 @@
 package com.msalikhov.dictionarysample.di.app
 
+import com.google.gson.Gson
 import com.msalikhov.dictionarysample.BuildConfig
 import dagger.Module
 import dagger.Provides
@@ -18,4 +19,9 @@ object NetworkModule {
         .Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(logLevel))
         .build()
+
+    @JvmStatic
+    @Singleton
+    @Provides
+    fun getGson() = Gson()
 }

@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.data.network.token.models
+package com.msalikhov.dictionarysample.data.network.yandex.models
 
 import com.google.gson.annotations.SerializedName
 import java.util.*

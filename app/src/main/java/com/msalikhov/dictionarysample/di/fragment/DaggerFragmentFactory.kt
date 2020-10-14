@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.di.app
+package com.msalikhov.dictionarysample.di.fragment
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory

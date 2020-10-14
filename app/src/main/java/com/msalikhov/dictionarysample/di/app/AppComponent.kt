@@ -6,7 +6,7 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
-@Component(modules = [TokenModule::class, NetworkModule::class, DatabaseModule::class])
+@Component(modules = [NetworkModule::class, DatabaseModule::class])
 @Singleton
 interface AppComponent {
     val translationComponent: TranslationComponent

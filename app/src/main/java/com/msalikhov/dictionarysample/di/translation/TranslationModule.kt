@@ -4,8 +4,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.msalikhov.dictionarysample.data.repository.translation.TranslationRepository
 import com.msalikhov.dictionarysample.data.repository.translation.TranslationRepositoryImpl
-import com.msalikhov.dictionarysample.di.app.DaggerFragmentFactory
-import com.msalikhov.dictionarysample.di.app.FragmentMapKey
+import com.msalikhov.dictionarysample.data.repository.translation.TranslationService
+import com.msalikhov.dictionarysample.data.repository.translation.YandexTranslationService
+import com.msalikhov.dictionarysample.di.fragment.DaggerFragmentFactory
+import com.msalikhov.dictionarysample.di.fragment.FragmentMapKey
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationFragment
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationsHistoryFragment
 import dagger.Binds
@@ -18,6 +20,9 @@ interface TranslationModule {
     @Binds
     @TranslationScope
     fun TranslationRepositoryImpl.bindTranslationRepository(): TranslationRepository
+
+    @Binds
+    fun YandexTranslationService.bindTranslationService(): TranslationService
 
     @Binds
     fun DaggerFragmentFactory.bindFragmentFactory(): FragmentFactory

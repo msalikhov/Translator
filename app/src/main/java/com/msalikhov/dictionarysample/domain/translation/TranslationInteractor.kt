@@ -27,11 +27,16 @@ class TranslationInteractor @Inject constructor(
         val selectedLangCode = selectedModel?.code ?: DEFAULT_LANG
 
         return translationRepository
-            .getTranslations(selectedLangCode, text)
-            .map {
-                val translation = it.first()
-                val inputLangModel = languageModels.firstOrNull { it.code == translation.inputLangCode }
-                TranslationModel(translation.outputText, inputLangModel?.name.orEmpty(), translation.inputLangCode)
+            .getTranslations(selectedLangCode, arrayOf(text))
+            .map { models ->
+                val translation = models.first()
+                val inputLangModel =
+                    languageModels.firstOrNull { it.code == translation.inputLangCode }
+                TranslationModel(
+                    translation.outputText,
+                    inputLangModel?.name.orEmpty(),
+                    translation.inputLangCode
+                )
             }
     }
 }

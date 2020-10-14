@@ -38,7 +38,10 @@ input_text ASC""")
     fun observeTranslationHistoryModels(): Observable<List<TranslationHistoryDBModel>>
 
     @Query("SELECT * FROM TranslationDBModel WHERE input_text IN (:texts) AND output_lang_code LIKE :targetLangCode")
-    fun findTranslations(targetLangCode: String, vararg texts: String): Single<List<TranslationDBModel>>
+    fun findTranslations(
+        targetLangCode: String,
+        texts: Array<out String>
+    ): Single<List<TranslationDBModel>>
 
     @Insert
     fun addTranslations(translations: List<TranslationDBModel>): Completable

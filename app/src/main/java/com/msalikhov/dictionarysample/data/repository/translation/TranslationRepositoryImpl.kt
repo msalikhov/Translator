@@ -1,35 +1,24 @@
 package com.msalikhov.dictionarysample.data.repository.translation
 
-import com.msalikhov.dictionarysample.BuildConfig
 import com.msalikhov.dictionarysample.data.db.translation.TranslationDAO
 import com.msalikhov.dictionarysample.data.db.translation.models.FavouriteTranslationDBModel
 import com.msalikhov.dictionarysample.data.db.translation.models.SupportedLanguageDBModel
 import com.msalikhov.dictionarysample.data.db.translation.models.TranslationDBModel
-import com.msalikhov.dictionarysample.data.network.NetworkApi
-import com.msalikhov.dictionarysample.data.network.translation.models.SupportedLanguagesRequest
-import com.msalikhov.dictionarysample.data.network.translation.models.TranslationRequest
-import com.msalikhov.dictionarysample.data.repository.token.TokenRepository
 import com.msalikhov.dictionarysample.utils.CacheHelper
 import io.reactivex.Single
 import javax.inject.Inject
 
 class TranslationRepositoryImpl @Inject constructor(
-    private val networkApi: NetworkApi,
     private val translationDAO: TranslationDAO,
-    private val tokenRepository: TokenRepository
+    private val translationService: TranslationService
 ) : TranslationRepository {
 
     override fun getSupportedLanguages(): Single<List<SupportedLanguageDBModel>> =
         CacheHelper.dbOrNetwork(
-            translationDAO.getSupportedLanguages(),
-            tokenRepository.iamToken.flatMap {
-                networkApi.getSupportedLanguages(
-                    SupportedLanguagesRequest(BuildConfig.YANDEX_FOLDER_ID),
-                    it
-                )
-            },
-            { data -> data.isEmpty() },
-            { response ->
+            dbSingleProvider = translationDAO.getSupportedLanguages(),
+            networkSingleProvider = translationService.getSupportedLanguages(),
+            getFromNetworkCondition = { data -> data.isEmpty() },
+            dbWriteProvider = { response ->
                 translationDAO.addSupportedLanguages(response.languages.map {
                     SupportedLanguageDBModel(
                         languageCode = it.code,
@@ -41,21 +30,13 @@ class TranslationRepositoryImpl @Inject constructor(
 
     override fun getTranslations(
         targetLanguageCode: String,
-        vararg texts: String
+        texts: Array<out String>
     ): Single<List<TranslationDBModel>> =
         CacheHelper.dbOrNetwork(
-            translationDAO.findTranslations(targetLanguageCode, *texts),
-            tokenRepository.iamToken.flatMap {
-                networkApi.getTranslation(
-                    TranslationRequest(
-                        BuildConfig.YANDEX_FOLDER_ID,
-                        texts,
-                        targetLanguageCode
-                    ), it
-                )
-            },
-            { data -> data.isEmpty() },
-            { response ->
+            dbSingleProvider = translationDAO.findTranslations(targetLanguageCode, texts),
+            networkSingleProvider = translationService.getTranslation(texts, targetLanguageCode),
+            getFromNetworkCondition = { data -> data.isEmpty() },
+            dbWriteProvider = { response ->
                 translationDAO.addTranslations(response.translations.mapIndexed { index, translation ->
                     TranslationDBModel(
                         inputText = texts[index],

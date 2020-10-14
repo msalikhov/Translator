@@ -1,7 +1,7 @@
 package com.msalikhov.dictionarysample.presentation.presenter.translation
 
 import android.annotation.SuppressLint
-import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInterator
+import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInteratorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationsHistoryView
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
@@ -11,7 +11,7 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 
 class TranslationsHistoryPresenter @Inject constructor(
-    private val translationHistoryInterator: TranslationHistoryInterator
+    private val translationHistoryInterator: TranslationHistoryInteratorImpl
 ) : MvpPresenter<TranslationsHistoryView>() {
 
     private val disposable = translationHistoryInterator

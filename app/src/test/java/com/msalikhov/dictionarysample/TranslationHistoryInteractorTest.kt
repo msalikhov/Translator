@@ -2,7 +2,7 @@ package com.msalikhov.dictionarysample
 
 import com.msalikhov.dictionarysample.data.db.translation.models.TranslationHistoryDBModel
 import com.msalikhov.dictionarysample.data.repository.translation.TranslationRepository
-import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInterator
+import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInteratorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
@@ -28,7 +28,7 @@ class TranslationHistoryInteractorTest : Assert() {
             "",
             false
         )
-        assertTrue(TranslationHistoryInterator(repo).toggleFavouriteItem(model) === completable)
+        assertTrue(TranslationHistoryInteratorImpl(repo).toggleFavouriteItem(model) === completable)
     }
 
     @Test
@@ -46,7 +46,7 @@ class TranslationHistoryInteractorTest : Assert() {
             "",
             true
         )
-        assertTrue(TranslationHistoryInterator(repo).toggleFavouriteItem(model) === completable)
+        assertTrue(TranslationHistoryInteratorImpl(repo).toggleFavouriteItem(model) === completable)
     }
 
     @Test
@@ -94,7 +94,7 @@ class TranslationHistoryInteractorTest : Assert() {
         val repo = mock<TranslationRepository> {
             on { observeTranslationHistoryModels() } doReturn Observable.just(historyDBModelsNoFavourites, historyDBModelsWithFavourites)
         }
-        TranslationHistoryInterator(repo)
+        TranslationHistoryInteratorImpl(repo)
             .observeHistoryModels()
             .test()
             .assertValues(historyModelsNoFavourites, historyModelsWithFavourites)

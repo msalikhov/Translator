@@ -3,7 +3,7 @@ package com.msalikhov.dictionarysample
 import com.msalikhov.dictionarysample.data.db.translation.models.SupportedLanguageDBModel
 import com.msalikhov.dictionarysample.data.db.translation.models.TranslationDBModel
 import com.msalikhov.dictionarysample.data.repository.translation.TranslationRepository
-import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
+import com.msalikhov.dictionarysample.domain.translation.TranslationInteractorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationModel
 import com.nhaarman.mockitokotlin2.any
@@ -45,7 +45,7 @@ class TranslationInteractorTest: Assert() {
             on { getSupportedLanguages() } doReturn Single.just(dbModels)
         }
 
-        TranslationInteractor(repo)
+        TranslationInteractorImpl(repo)
             .getSupportedLanguages()
             .test()
             .assertValue(models)
@@ -82,7 +82,7 @@ class TranslationInteractorTest: Assert() {
         val repo = mock<TranslationRepository> {
             on { getTranslations(any(), any()) } doReturn Single.just(translationDbModels)
         }
-        TranslationInteractor(repo)
+        TranslationInteractorImpl(repo)
             .translateText("input", langModels)
             .test()
             .assertValue(translationModel)

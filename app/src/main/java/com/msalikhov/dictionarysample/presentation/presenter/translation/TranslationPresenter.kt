@@ -1,6 +1,6 @@
 package com.msalikhov.dictionarysample.presentation.presenter.translation
 
-import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
+import com.msalikhov.dictionarysample.domain.translation.TranslationInteractorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationModel
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationView
@@ -17,7 +17,7 @@ import javax.inject.Inject
 private const val QUERY_DEBOUNCE_MILLIS = 500L
 
 class TranslationPresenter @Inject constructor(
-    private val translationInteractor: TranslationInteractor
+    private val translationInteractor: TranslationInteractorImpl
 ) : MvpPresenter<TranslationView>() {
 
     private val inputSubject = PublishSubject.create<String>()

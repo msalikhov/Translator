@@ -9,6 +9,10 @@ import com.msalikhov.dictionarysample.data.repository.yandex.YandexServiceTokenI
 import com.msalikhov.dictionarysample.data.repository.yandex.YandexTranslationService
 import com.msalikhov.dictionarysample.di.fragment.DaggerFragmentFactory
 import com.msalikhov.dictionarysample.di.fragment.FragmentMapKey
+import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInterator
+import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInteratorImpl
+import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
+import com.msalikhov.dictionarysample.domain.translation.TranslationInteractorImpl
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationFragment
 import com.msalikhov.dictionarysample.presentation.view.translation.TranslationsHistoryFragment
 import dagger.Binds
@@ -34,6 +38,14 @@ interface TranslationModule {
     @Binds
     @TranslationScope
     fun DaggerFragmentFactory.bindFragmentFactory(): FragmentFactory
+
+    @Binds
+    @TranslationScope
+    fun TranslationHistoryInteratorImpl.bindTranslationHistoryInteractor(): TranslationHistoryInterator
+
+    @Binds
+    @TranslationScope
+    fun TranslationInteractorImpl.bindTranslationInteractor(): TranslationInteractor
 
     @Binds
     @IntoMap

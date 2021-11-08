@@ -11,11 +11,8 @@ import javax.inject.Singleton
 interface AppComponent {
     val translationComponent: TranslationComponent
 
-    @Component.Builder
-    interface Builder {
-        @BindsInstance
-        fun appContext(context: Context): Builder
-
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance context: Context): AppComponent
     }
 }

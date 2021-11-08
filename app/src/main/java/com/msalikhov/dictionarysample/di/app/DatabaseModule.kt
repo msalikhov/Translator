@@ -12,14 +12,12 @@ import javax.inject.Singleton
 object DatabaseModule {
     private const val DB_NAME = "app_database"
 
-    @JvmStatic
     @Provides
     @Singleton
     fun getAppDB(context: Context): AppDatabase = Room
         .databaseBuilder(context, AppDatabase::class.java, DB_NAME)
         .build()
 
-    @JvmStatic
     @Provides
     fun getTranslationDAO(appDatabase: AppDatabase): TranslationDAO = appDatabase.translationDao
 }

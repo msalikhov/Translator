@@ -88,14 +88,14 @@ class TranslationFragment @Inject constructor(
 
     private fun createSupportedLanguageViewHolder(view: View) =
         object : RecyclerView.ViewHolder(view), (LanguageModel) -> Unit, View.OnClickListener {
-            private val textView = itemView as TextView
+            private val textView get() = itemView as TextView
 
             init {
                 itemView.setOnClickListener(this)
             }
 
             override fun onClick(v: View?) {
-                presenter.changeTargetLanguage(supportedLanguagesAdapter.currentList[adapterPosition].code)
+                presenter.changeTargetLanguage(supportedLanguagesAdapter.currentList[bindingAdapterPosition].code)
             }
 
             override fun invoke(model: LanguageModel) {

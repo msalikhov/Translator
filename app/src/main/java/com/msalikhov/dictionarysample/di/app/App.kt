@@ -1,25 +1,25 @@
 package com.msalikhov.dictionarysample.di.app
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import com.msalikhov.dictionarysample.di.translation.TranslationComponent
 
+@SuppressLint("StaticFieldLeak")
 private lateinit var context: Context
 
 class App : Application() {
 
     override fun onCreate() {
-        super.onCreate()
         context = this
+        super.onCreate()
     }
 }
 
 object ComponentHolder {
     private val appComponent by lazy {
-        DaggerAppComponent
-            .builder()
-            .appContext(context)
-            .build()
+        DaggerAppComponent.factory().create(context)
     }
 
-    val translationComponent get() = appComponent.translationComponent
+    val translationComponent: TranslationComponent get() = appComponent.translationComponent
 }

@@ -12,7 +12,6 @@ import javax.inject.Singleton
 object NetworkModule {
     private val logLevel get() = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
 
-    @JvmStatic
     @Singleton
     @Provides
     fun getOkHttpClient() = OkHttpClient
@@ -20,7 +19,6 @@ object NetworkModule {
         .addInterceptor(HttpLoggingInterceptor().setLevel(logLevel))
         .build()
 
-    @JvmStatic
     @Singleton
     @Provides
     fun getGson() = Gson()

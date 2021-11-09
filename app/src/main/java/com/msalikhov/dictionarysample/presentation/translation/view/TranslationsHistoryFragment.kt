@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.presentation.view.translation
+package com.msalikhov.dictionarysample.presentation.translation.view
 
 import android.os.Bundle
 import android.view.View
@@ -6,51 +6,63 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.msalikhov.dictionarysample.R
 import com.msalikhov.dictionarysample.databinding.FragmentTranslationsHistoryBinding
+import com.msalikhov.dictionarysample.di.app.ComponentHolder
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
-import com.msalikhov.dictionarysample.presentation.presenter.translation.TranslationsHistoryPresenter
+import com.msalikhov.dictionarysample.presentation.translation.viewmodel.TranslationHistoryViewModel
+import com.msalikhov.dictionarysample.utils.livedata.LCEState
 import com.msalikhov.dictionarysample.utils.recycler.SimpleAdapterFactory
-import moxy.MvpAppCompatFragment
-import moxy.ktx.moxyPresenter
-import javax.inject.Inject
-import javax.inject.Provider
 
-class TranslationsHistoryFragment @Inject constructor(
-    private val presenterProvider: Provider<TranslationsHistoryPresenter>
-) : MvpAppCompatFragment(R.layout.fragment_translations_history), TranslationsHistoryView {
+class TranslationsHistoryFragment : Fragment(R.layout.fragment_translations_history) {
 
     private val binding by viewBinding(FragmentTranslationsHistoryBinding::bind)
-    private val presenter by moxyPresenter { presenterProvider.get() }
+    private val viewModel: TranslationHistoryViewModel by viewModels {
+        object: ViewModelProvider.Factory{
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return ComponentHolder.translationComponent.translationsHistoryViewModel as T
+            }
+        }
+    }
 
     private val adapter: ListAdapter<TranslationHistoryModel, *> = SimpleAdapterFactory.build(
         R.layout.item_history_translation,
-        this::createItemViewHolder
+        ::TranslationHistoryViewHolder
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.historyItems.adapter = adapter
+        viewModel.translationsHistory.observe(viewLifecycleOwner) { state ->
+            when(state) {
+                is LCEState.Error -> {
+                    binding.progressBar.isVisible = false
+                    state.consume()?.let { displayError(it) }
+                }
+                is LCEState.Loading -> {
+                    binding.progressBar.isVisible = true
+                }
+                is LCEState.Success -> {
+                    binding.progressBar.isVisible = false
+                    adapter.submitList(state.value)
+                }
+            }
+        }
     }
 
-    override fun displayTranslationHistoryItems(items: List<TranslationHistoryModel>) {
-        adapter.submitList(items)
-    }
-
-    override fun displayError(throwable: Throwable) {
+    private fun displayError(throwable: Throwable) {
         Toast
             .makeText(requireContext(), throwable.localizedMessage.orEmpty(), Toast.LENGTH_LONG)
             .show()
     }
 
-    override fun updateProgress(loading: Boolean) {
-        binding.progressBar.isVisible = loading
-    }
-
-    private fun createItemViewHolder(view: View) =
-        object : RecyclerView.ViewHolder(view), (TranslationHistoryModel) -> Unit, View.OnClickListener {
+    private inner class TranslationHistoryViewHolder(view: View): RecyclerView.ViewHolder(view), (TranslationHistoryModel) -> Unit, View.OnClickListener {
             private val inputLangName: TextView = itemView.findViewById(R.id.inputLangName)
             private val inputText: TextView = itemView.findViewById(R.id.inputText)
             private val outputLangName: TextView = itemView.findViewById(R.id.outputLangName)
@@ -62,7 +74,7 @@ class TranslationsHistoryFragment @Inject constructor(
             }
 
             override fun onClick(v: View?) {
-                presenter.toggleFavouriteItem(adapter.currentList[adapterPosition])
+                viewModel.toggleFavouriteItem(adapter.currentList[adapterPosition])
             }
 
             override fun invoke(item: TranslationHistoryModel) {

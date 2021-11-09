@@ -1,10 +1,12 @@
 package com.msalikhov.dictionarysample.di.translation
 
-import com.msalikhov.dictionarysample.presentation.view.translation.TranslationActivity
+import com.msalikhov.dictionarysample.presentation.translation.viewmodel.TranslationHistoryViewModel
+import com.msalikhov.dictionarysample.presentation.translation.viewmodel.TranslationViewModel
 import dagger.Subcomponent
 
-@Subcomponent(modules = [TranslationModule::class])
+@Subcomponent(modules = [TranslationModule::class, SkyEngTranslationServiceModule::class])
 @TranslationScope
 interface TranslationComponent {
-    fun inject(activity: TranslationActivity)
+    val translationViewModel: TranslationViewModel
+    val translationsHistoryViewModel: TranslationHistoryViewModel
 }

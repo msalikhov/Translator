@@ -10,9 +10,8 @@ private lateinit var context: Context
 
 class App : Application() {
 
-    override fun onCreate() {
+    init {
         context = this
-        super.onCreate()
     }
 }
 

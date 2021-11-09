@@ -1,25 +1,19 @@
-package com.msalikhov.dictionarysample.presentation.view.translation
+package com.msalikhov.dictionarysample.presentation.translation.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentFactory
 import com.msalikhov.dictionarysample.R
 import com.msalikhov.dictionarysample.databinding.ActivityTranslationBinding
-import com.msalikhov.dictionarysample.di.app.ComponentHolder
 import com.msalikhov.dictionarysample.presentation.CiceroneHolder
+import com.msalikhov.dictionarysample.presentation.translation.screen.TranslationsHistoryScreen
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import javax.inject.Inject
 
 class TranslationActivity : AppCompatActivity() {
-    @Inject
-    lateinit var fragmentFactory: FragmentFactory
 
     private val navigator by lazy { SupportAppNavigator(this, R.id.fragmentContainerView) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ComponentHolder.translationComponent.inject(this)
-        supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
         val binding = ActivityTranslationBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -2,20 +2,22 @@ package com.msalikhov.dictionarysample.presentation.translation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInteratorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
-import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBag
-import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBagImpl
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
+import com.msalikhov.dictionarysample.utils.livedata.BaseViewModel
 import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
-class TranslationHistoryViewModel @Inject constructor(
-    private val translationsHistoryInteractor: TranslationHistoryInteratorImpl
-): ViewModel(), ViewModelDisposeBag by ViewModelDisposeBagImpl() {
+class TranslationHistoryViewModel @AssistedInject constructor(
+    private val translationsHistoryInteractor: TranslationHistoryInteratorImpl,
+    @Assisted private val savedStateHandle: SavedStateHandle
+): BaseViewModel() {
 
     private val _translationsHistory = MutableLiveData<LCEState<List<TranslationHistoryModel>>>()
     val translationsHistory: LiveData<LCEState<List<TranslationHistoryModel>>> get() = _translationsHistory
@@ -48,5 +50,10 @@ class TranslationHistoryViewModel @Inject constructor(
                 {},
                 { _translationsHistory.value = LCEState.Error(it) })
             .disposeOnCleared()
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(state: SavedStateHandle): TranslationHistoryViewModel
     }
 }

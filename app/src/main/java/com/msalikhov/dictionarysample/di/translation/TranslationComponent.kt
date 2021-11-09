@@ -7,6 +7,6 @@ import dagger.Subcomponent
 @Subcomponent(modules = [TranslationModule::class, SkyEngTranslationServiceModule::class])
 @TranslationScope
 interface TranslationComponent {
-    val translationViewModel: TranslationViewModel
-    val translationsHistoryViewModel: TranslationHistoryViewModel
+    val translationViewModelFactory: TranslationViewModel.Factory
+    val translationsHistoryViewModelFactory: TranslationHistoryViewModel.Factory
 }

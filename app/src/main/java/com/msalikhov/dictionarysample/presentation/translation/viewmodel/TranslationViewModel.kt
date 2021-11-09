@@ -2,25 +2,27 @@ package com.msalikhov.dictionarysample.presentation.translation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationModel
-import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBag
-import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBagImpl
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
+import com.msalikhov.dictionarysample.utils.livedata.BaseViewModel
 import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class TranslationViewModel @Inject constructor(
-    private val translationsInteractor: TranslationInteractor
-) : ViewModel(), ViewModelDisposeBag by ViewModelDisposeBagImpl() {
+class TranslationViewModel @AssistedInject constructor(
+    private val translationsInteractor: TranslationInteractor,
+    @Assisted private val savedStateHandle: SavedStateHandle
+) : BaseViewModel() {
     private val inputSubject = PublishSubject.create<String>()
     private val supportedLanguagesSubject = BehaviorSubject.createDefault(emptyList<LanguageModel>())
     private var lastTranslationModel: TranslationModel? = null
@@ -104,5 +106,10 @@ class TranslationViewModel @Inject constructor(
 
     private companion object {
         const val QUERY_DEBOUNCE_MILLIS = 500L
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): TranslationViewModel
     }
 }

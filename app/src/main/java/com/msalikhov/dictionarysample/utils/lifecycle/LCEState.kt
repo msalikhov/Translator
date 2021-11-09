@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.utils.livedata
+package com.msalikhov.dictionarysample.utils.lifecycle
 
 sealed class LCEState<out T: Any> {
     object Loading: LCEState<Nothing>()

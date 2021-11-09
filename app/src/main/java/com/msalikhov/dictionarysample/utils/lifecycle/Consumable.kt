@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.utils.livedata
+package com.msalikhov.dictionarysample.utils.lifecycle
 
 import java.util.concurrent.atomic.AtomicBoolean
 

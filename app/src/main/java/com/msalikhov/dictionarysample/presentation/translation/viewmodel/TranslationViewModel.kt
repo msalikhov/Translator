@@ -7,8 +7,8 @@ import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationModel
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
-import com.msalikhov.dictionarysample.utils.livedata.BaseViewModel
-import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.BaseViewModel
+import com.msalikhov.dictionarysample.utils.lifecycle.LCEState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

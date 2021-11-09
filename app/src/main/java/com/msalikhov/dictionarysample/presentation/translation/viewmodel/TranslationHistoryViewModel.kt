@@ -6,8 +6,8 @@ import androidx.lifecycle.SavedStateHandle
 import com.msalikhov.dictionarysample.domain.translation.TranslationHistoryInteratorImpl
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
-import com.msalikhov.dictionarysample.utils.livedata.BaseViewModel
-import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.BaseViewModel
+import com.msalikhov.dictionarysample.utils.lifecycle.LCEState
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

@@ -1,4 +1,4 @@
-package com.msalikhov.dictionarysample.utils.livedata
+package com.msalikhov.dictionarysample.utils.lifecycle
 
 import androidx.annotation.CallSuper
 import androidx.lifecycle.ViewModel

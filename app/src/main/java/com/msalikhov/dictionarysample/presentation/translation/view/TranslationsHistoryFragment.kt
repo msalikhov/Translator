@@ -8,9 +8,6 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -19,18 +16,15 @@ import com.msalikhov.dictionarysample.databinding.FragmentTranslationsHistoryBin
 import com.msalikhov.dictionarysample.di.app.ComponentHolder
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationHistoryModel
 import com.msalikhov.dictionarysample.presentation.translation.viewmodel.TranslationHistoryViewModel
-import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.savedStateViewModelFactory
 import com.msalikhov.dictionarysample.utils.recycler.SimpleAdapterFactory
 
 class TranslationsHistoryFragment : Fragment(R.layout.fragment_translations_history) {
 
     private val binding by viewBinding(FragmentTranslationsHistoryBinding::bind)
     private val viewModel: TranslationHistoryViewModel by viewModels {
-        object: AbstractSavedStateViewModelFactory(this, arguments) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                return ComponentHolder.translationComponent.translationsHistoryViewModelFactory.create(handle) as T
-            }
-        }
+        savedStateViewModelFactory(ComponentHolder.translationComponent.translationsHistoryViewModelFactory::create)
     }
 
     private val adapter: ListAdapter<TranslationHistoryModel, *> = SimpleAdapterFactory.build(
@@ -75,7 +69,7 @@ class TranslationsHistoryFragment : Fragment(R.layout.fragment_translations_hist
             }
 
             override fun onClick(v: View?) {
-                viewModel.toggleFavouriteItem(adapter.currentList[adapterPosition])
+                viewModel.toggleFavouriteItem(adapter.currentList[bindingAdapterPosition])
             }
 
             override fun invoke(item: TranslationHistoryModel) {

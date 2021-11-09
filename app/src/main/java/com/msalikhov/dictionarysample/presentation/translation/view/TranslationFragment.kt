@@ -16,9 +16,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -27,7 +24,8 @@ import com.msalikhov.dictionarysample.databinding.FragmentTranslationBinding
 import com.msalikhov.dictionarysample.di.app.ComponentHolder
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.presentation.translation.viewmodel.TranslationViewModel
-import com.msalikhov.dictionarysample.utils.livedata.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.LCEState
+import com.msalikhov.dictionarysample.utils.lifecycle.savedStateViewModelFactory
 import com.msalikhov.dictionarysample.utils.recycler.ItemMarginDecorator
 import com.msalikhov.dictionarysample.utils.recycler.SimpleAdapterFactory
 import kotlin.math.max
@@ -36,11 +34,7 @@ class TranslationFragment : Fragment(R.layout.fragment_translation) {
 
     private val binding by viewBinding(FragmentTranslationBinding::bind)
     private val viewModel: TranslationViewModel by viewModels {
-        object : AbstractSavedStateViewModelFactory(this, arguments) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                return ComponentHolder.translationComponent.translationViewModelFactory.create(handle) as T
-            }
-        }
+        savedStateViewModelFactory(ComponentHolder.translationComponent.translationViewModelFactory::create)
     }
     private val supportedLanguagesAdapter: ListAdapter<LanguageModel, *> =
         SimpleAdapterFactory.build(

@@ -1,10 +1,10 @@
-package com.msalikhov.dictionarysample.data.repository.yandex
+package com.msalikhov.dictionarysample.data.network.translation.yandex.service
 
 import android.content.Context
 import com.google.gson.Gson
 import com.msalikhov.dictionarysample.BuildConfig
-import com.msalikhov.dictionarysample.data.network.yandex.models.IAMTokenRequest
-import com.msalikhov.dictionarysample.data.network.yandex.models.IAMTokenResponse
+import com.msalikhov.dictionarysample.data.network.translation.yandex.models.YandexIAMTokenRequest
+import com.msalikhov.dictionarysample.data.network.translation.yandex.models.YandexIAMTokenResponse
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -12,12 +12,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import javax.inject.Inject
-
-private const val STORE_NAME = "tokenStore"
-private const val IAM_TOKEN_VALUE_KEY = "iam_token_key"
-private const val IAM_TOKEN_EXPIRATION_KEY = "iam_token_expiration_key"
-private const val IAM_TOKEN_URL = "https://iam.api.cloud.yandex.net/iam/v1/tokens"
-private const val AUTHORIZATION = "Authorization"
 
 class YandexServiceTokenInterceptor @Inject constructor(
     context: Context,
@@ -45,12 +39,12 @@ class YandexServiceTokenInterceptor @Inject constructor(
             .url(IAM_TOKEN_URL)
             .post(
                 gson
-                    .toJson(IAMTokenRequest(BuildConfig.YANDEX_OAUTH_TOKEN))
+                    .toJson(YandexIAMTokenRequest(BuildConfig.YANDEX_OAUTH_TOKEN))
                     .toRequestBody("application/json".toMediaType())
             )
             .build()
             .let { okHttpClient.newCall(it).execute() }
-            .let { gson.fromJson(it.body!!.charStream(), IAMTokenResponse::class.java) }
+            .let { gson.fromJson(it.body!!.charStream(), YandexIAMTokenResponse::class.java) }
             .let { (token, expiration) ->
                 localIAMTokenValue = token
                 localIAMTokenExpiration = expiration.time
@@ -64,5 +58,13 @@ class YandexServiceTokenInterceptor @Inject constructor(
             .build()
 
         return chain.proceed(newRequest)
+    }
+
+    private companion object {
+        const val STORE_NAME = "tokenStore"
+        const val IAM_TOKEN_VALUE_KEY = "iam_token_key"
+        const val IAM_TOKEN_EXPIRATION_KEY = "iam_token_expiration_key"
+        const val IAM_TOKEN_URL = "https://iam.api.cloud.yandex.net/iam/v1/tokens"
+        const val AUTHORIZATION = "Authorization"
     }
 }

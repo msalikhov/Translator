@@ -18,8 +18,8 @@ class TranslationRepositoryImpl @Inject constructor(
             dbSingleProvider = translationDAO.getSupportedLanguages(),
             networkSingleProvider = translationService.getSupportedLanguages(),
             getFromNetworkCondition = { data -> data.isEmpty() },
-            dbWriteProvider = { response ->
-                translationDAO.addSupportedLanguages(response.languages.map {
+            dbWriteProvider = { languages ->
+                translationDAO.addSupportedLanguages(languages.map {
                     SupportedLanguageDBModel(
                         languageCode = it.code,
                         languageName = it.name ?: it.code
@@ -36,8 +36,8 @@ class TranslationRepositoryImpl @Inject constructor(
             dbSingleProvider = translationDAO.findTranslations(targetLanguageCode, texts),
             networkSingleProvider = translationService.getTranslation(texts, targetLanguageCode),
             getFromNetworkCondition = { data -> data.isEmpty() },
-            dbWriteProvider = { response ->
-                translationDAO.addTranslations(response.translations.mapIndexed { index, translation ->
+            dbWriteProvider = { translations ->
+                translationDAO.addTranslations(translations.mapIndexed { index, translation ->
                     TranslationDBModel(
                         inputText = texts[index],
                         inputLangCode = translation.detectedLanguageCode,

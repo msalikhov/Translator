@@ -10,10 +10,7 @@ import io.reactivex.Single
 
 interface TranslationRepository {
     fun getSupportedLanguages(): Single<List<SupportedLanguageDBModel>>
-    fun getTranslations(
-        targetLanguageCode: String,
-        texts: Array<out String>
-    ): Single<List<TranslationDBModel>>
+    fun getTranslations(targetLanguageCode: String, texts: Array<out String>): Single<List<TranslationDBModel>>
 
     fun observeTranslationHistoryModels(): Observable<List<TranslationHistoryDBModel>>
     fun addTranslationToFavourites(favourite: FavouriteTranslationDBModel): Completable

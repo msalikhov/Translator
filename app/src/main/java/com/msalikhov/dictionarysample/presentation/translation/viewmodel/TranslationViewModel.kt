@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.msalikhov.dictionarysample.domain.translation.TranslationInteractor
 import com.msalikhov.dictionarysample.domain.translation.model.LanguageModel
 import com.msalikhov.dictionarysample.domain.translation.model.TranslationModel
+import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBag
+import com.msalikhov.dictionarysample.utils.extensions.ViewModelDisposeBagImpl
 import com.msalikhov.dictionarysample.utils.extensions.mapToResult
 import com.msalikhov.dictionarysample.utils.livedata.LCEState
 import io.reactivex.Observable
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 class TranslationViewModel @Inject constructor(
     private val translationsInteractor: TranslationInteractor
-) : ViewModel() {
+) : ViewModel(), ViewModelDisposeBag by ViewModelDisposeBagImpl() {
     private val inputSubject = PublishSubject.create<String>()
     private val supportedLanguagesSubject = BehaviorSubject.createDefault(emptyList<LanguageModel>())
     private var lastTranslationModel: TranslationModel? = null
@@ -35,51 +37,49 @@ class TranslationViewModel @Inject constructor(
     private val _supportedLanguages = MutableLiveData<LCEState<List<LanguageModel>>>()
     val supportedLanguages: LiveData<LCEState<List<LanguageModel>>> get() = _supportedLanguages
 
-    private val translationDisposable = Observable
-        .combineLatest(inputSubject, supportedLanguagesSubject, ::Pair)
-        .doOnNext { _translationResult.value = LCEState.Loading }
-        .debounce(QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .distinctUntilChanged()
-        .switchMapSingle { (text, models) ->
-            translationsInteractor
-                .translateText(text, models)
-                .mapToResult()
-                .subscribeOn(Schedulers.io())
-        }
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe { result ->
-            result
-                .onSuccess {
-                    _inputLanguage.value = it.inputLangName
-                    _translationResult.value = LCEState.Success(it.text)
-                    lastTranslationModel = it
-                }
-                .onFailure {
-                    _translationResult.value = LCEState.Error(it)
-                }
-        }
+    init {
+        Observable
+            .combineLatest(inputSubject, supportedLanguagesSubject, ::Pair)
+            .doOnNext { _translationResult.value = LCEState.Loading }
+            .debounce(QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .distinctUntilChanged()
+            .switchMapSingle { (text, models) ->
+                translationsInteractor
+                    .translateText(text, models)
+                    .mapToResult()
+                    .subscribeOn(Schedulers.io())
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { result ->
+                result
+                    .onSuccess {
+                        _inputLanguage.value = it.inputLangName
+                        _translationResult.value = LCEState.Success(it.text)
+                        lastTranslationModel = it
+                    }
+                    .onFailure {
+                        _translationResult.value = LCEState.Error(it)
+                    }
+            }
+            .disposeOnCleared()
 
-    private val supportedLanguagesDisposable = translationsInteractor
-        .getSupportedLanguages()
-        .mapToResult()
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe { _supportedLanguages.value = LCEState.Loading }
-        .subscribe { result ->
-            result
-                .onSuccess {
-                    updateSupportedLanguages(it)
-                }
-                .onFailure {
-                    _supportedLanguages.value = LCEState.Error(it)
-                }
-        }
-
-    override fun onCleared() {
-        super.onCleared()
-        translationDisposable.dispose()
-        supportedLanguagesDisposable.dispose()
+        translationsInteractor
+            .getSupportedLanguages()
+            .mapToResult()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { _supportedLanguages.value = LCEState.Loading }
+            .subscribe { result ->
+                result
+                    .onSuccess {
+                        updateSupportedLanguages(it)
+                    }
+                    .onFailure {
+                        _supportedLanguages.value = LCEState.Error(it)
+                    }
+            }
+            .disposeOnCleared()
     }
 
     fun onTextChanged(text: String) {
